@@ -49,11 +49,11 @@ public class Userr {
         this.password = password;
     }
 
-    public Set<UserRequest> getItems() {
+    public Set<UserRequest> getRequests() {
         return requests;
     }
 
-    public void setItems(Set<UserRequest> items) {
+    public void setRequests(Set<UserRequest> items) {
         this.requests = items;
     }
 }
