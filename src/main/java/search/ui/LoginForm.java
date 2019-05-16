@@ -27,6 +27,7 @@ public class LoginForm {
         JFrame frame = new JFrame("Authorization");
         frame.setContentPane(panel);
         frame.setPreferredSize(new Dimension(400, 300));
+        frame.setLocation(new Point(800, 350));
         frame.pack();
 
         frame.setVisible(true);
