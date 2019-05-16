@@ -1,7 +1,8 @@
 package search.service;
 
-import search.entity.Userr;
+import search.entity.User;
 
 public interface IUserSevice {
-    void addUser(Userr user);
+    void addUser(User user);
+    Boolean isUserExists(String login, String password);
 }

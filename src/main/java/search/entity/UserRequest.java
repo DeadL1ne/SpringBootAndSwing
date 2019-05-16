@@ -24,7 +24,7 @@ public class UserRequest {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private Userr user;
+    private User user;
 
     public Long getId() {
         return id;
@@ -50,11 +50,11 @@ public class UserRequest {
         this.keyWords = keyWords;
     }
 
-    public Userr getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(Userr user) {
+    public void setUser(User user) {
         this.user = user;
     }
 }

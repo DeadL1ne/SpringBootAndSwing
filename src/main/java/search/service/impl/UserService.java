@@ -1,9 +1,10 @@
 package search.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import search.dao.UserDAO;
-import search.entity.Userr;
+import search.entity.User;
 import search.service.IUserSevice;
 
 @Service
@@ -17,7 +18,12 @@ public class UserService implements IUserSevice {
     }
 
     @Override
-    public void addUser(Userr user) {
+    public void addUser(User user) {
         dao.save(user);
+    }
+
+    @Override
+    public Boolean isUserExists(String login, String password) {
+        return dao.exists(Example.of(new User(login, password)));
     }
 }

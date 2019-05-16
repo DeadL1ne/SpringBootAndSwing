@@ -6,7 +6,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "userr")
-public class Userr {
+public class User {
 
     @Id
     @GeneratedValue(generator = "userr_generator")
@@ -24,6 +24,13 @@ public class Userr {
 
     @OneToMany(mappedBy = "user")
     private Set<UserRequest> requests = new HashSet<>();
+
+    public User() {}
+
+    public User(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
 
     public Long getId() {
         return id;

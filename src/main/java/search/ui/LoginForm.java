@@ -3,7 +3,8 @@ package search.ui;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import search.dao.UserDAO;
-import search.entity.Userr;
+import search.entity.User;
+import search.service.impl.UserService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,13 +13,18 @@ import java.awt.*;
 public class LoginForm {
 
     @Autowired
-    private UserDAO userService;
-    private JButton button1;
+    private UserService userService;
+
+    private JButton btnLogIn;
     private JPanel panel;
+    private JTextField tfLogin;
+    private JTextField tfPassword;
+    private JLabel lLogin;
+    private JLabel lPassword;
 
     public LoginForm() {
 
-        JFrame frame = new JFrame();
+        JFrame frame = new JFrame("Authorization");
         frame.setContentPane(panel);
         frame.setPreferredSize(new Dimension(400, 300));
         frame.pack();
@@ -26,18 +32,23 @@ public class LoginForm {
         frame.setVisible(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        button1.addActionListener(e -> sa());
+        btnLogIn.addActionListener(e -> {
+            if (checkLogin()) {
+                //TODO go next window
+            } else {
+                JOptionPane.showMessageDialog(frame,
+                        "Invalid login or password",
+                        "Authorization error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
     }
 
     public static void main(String[] args) {
-        LoginForm loginForm = new LoginForm();
-        loginForm.sa();
+        new LoginForm();
     }
 
-    private void sa() {
-        Userr usr = new Userr();
-        usr.setLogin("Paul");
-        usr.setPassword("qwerty");
-        userService.save(usr);
+    private boolean checkLogin() {
+        return userService.isUserExists(tfLogin.getText(), tfPassword.getText());
     }
 }
