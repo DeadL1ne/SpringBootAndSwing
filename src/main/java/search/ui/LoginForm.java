@@ -2,18 +2,19 @@ package search.ui;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import search.dao.UserDAO;
-import search.entity.User;
 import search.service.impl.UserService;
 
 import javax.swing.*;
 import java.awt.*;
 
 @Component
-public class LoginForm {
+public class LoginForm extends AbstractForm {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SearchForm searchForm;
 
     private JButton btnLogIn;
     private JPanel panel;
@@ -23,19 +24,23 @@ public class LoginForm {
     private JLabel lPassword;
 
     public LoginForm() {
+        final int WIDTH_FORM = 400;
+        final int HEIGHT_FORM = 300;
+        final String TITLE_FORM = "Authorization";
+        frame = new JFrame(TITLE_FORM);
 
-        JFrame frame = new JFrame("Authorization");
         frame.setContentPane(panel);
-        frame.setPreferredSize(new Dimension(400, 300));
-        frame.setLocation(new Point(800, 350));
+        frame.setPreferredSize(new Dimension(WIDTH_FORM, HEIGHT_FORM));
+        frame.setSize(WIDTH_FORM, HEIGHT_FORM);
+        setFrameToCenterScreen();
         frame.pack();
-
         frame.setVisible(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         btnLogIn.addActionListener(e -> {
             if (checkLogin()) {
-                //TODO go next window
+                hide();
+                searchForm.show();
             } else {
                 JOptionPane.showMessageDialog(frame,
                         "Invalid login or password",
