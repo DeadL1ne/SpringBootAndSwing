@@ -18,7 +18,7 @@ public class Document {
 
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "documents")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "documents")
     private Set<KeyWord> keyWords = new HashSet<>();
 
     public Long getId() {

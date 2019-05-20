@@ -2,10 +2,15 @@ package search.ui;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import search.entity.Document;
+import search.service.impl.DocumentService;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class SearchForm extends AbstractForm {
@@ -13,13 +18,18 @@ public class SearchForm extends AbstractForm {
     @Autowired
     LoginForm loginForm;
 
+    @Autowired
+    private DocumentService documentService;
+
     private JPanel searchPanel;
     private JTextField searchTextField;
     private JButton buttonSearch;
-    private JList resultList;
+    private JList<String> resultList;
     private JButton buttonLogOut;
 
     private DefaultListModel<String> resultDataset = new DefaultListModel<>();
+
+    Set<Document> docs = new HashSet<>();
 
     public SearchForm() {
         final int WIDTH_FORM = 500;
@@ -36,7 +46,7 @@ public class SearchForm extends AbstractForm {
         frame.pack();
         resultList.setModel(resultDataset);
 
-        buttonSearch.addActionListener(e -> mockData());
+        buttonSearch.addActionListener(e -> search());
         buttonLogOut.addActionListener(e -> {
             hide();
             resultDataset.clear();
@@ -44,17 +54,24 @@ public class SearchForm extends AbstractForm {
         });
     }
 
+    private void search() {
+        if (searchTextField.getText().isEmpty()) return;
+
+        docs.clear();
+        resultDataset.clear();
+        ArrayList<String> keyWords = new ArrayList<>(Arrays.asList(searchTextField.getText()
+                .toLowerCase().split(" ")));
+        keyWords.forEach(keyWord -> docs.addAll(documentService.getDocumentsByKeyWord(keyWord)));
+
+        if (docs.isEmpty()) return;
+        docs.forEach(document -> resultDataset.addElement(document.getName()));
+    }
+
     private void mockData() {
         ArrayList<String> mockedData = new ArrayList<>();
         mockedData.add("File C#");
         mockedData.add("Java file");
         mockedData.add("Python file");
-        setDataToList(mockedData);
-    }
-
-    private void setDataToList(ArrayList<String> data) {
-        for (String item : data) {
-            resultDataset.addElement(item);
-        }
+        mockedData.forEach(item -> resultDataset.addElement(item));
     }
 }

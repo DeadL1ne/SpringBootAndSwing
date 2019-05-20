@@ -20,11 +20,17 @@ public class KeyWord {
     @Column(unique = true)
     private String word;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Document> documents = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Document> userRequests = new HashSet<>();
+
+    public KeyWord(){}
+
+    public KeyWord(String word) {
+        this.word = word;
+    }
 
     public Long getId() {
         return id;
