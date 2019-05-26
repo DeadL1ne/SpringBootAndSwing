@@ -1,5 +1,7 @@
 package search.entity;
 
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,14 +19,15 @@ public class KeyWord {
     )
     private Long id;
 
+    @NaturalId
     @Column(unique = true)
     private String word;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "keyWords")
     private Set<Document> documents = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    private Set<Document> userRequests = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "keyWords")
+    private Set<UserRequest> userRequests = new HashSet<>();
 
     public KeyWord(){}
 
@@ -56,11 +59,11 @@ public class KeyWord {
         this.documents = documents;
     }
 
-    public Set<Document> getUserRequests() {
+    public Set<UserRequest> getUserRequests() {
         return userRequests;
     }
 
-    public void setUserRequests(Set<Document> userRequests) {
+    public void setUserRequests(Set<UserRequest> userRequests) {
         this.userRequests = userRequests;
     }
 }

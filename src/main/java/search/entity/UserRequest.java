@@ -19,12 +19,22 @@ public class UserRequest {
 
     private String requestText;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "userRequests")
+    @ManyToMany(fetch = FetchType.EAGER,
+    cascade = {
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "key_word_user_requests",
+    joinColumns = @JoinColumn(name="user_requests_id"),
+    inverseJoinColumns = @JoinColumn(name = "key_words_id"))
     private Set<KeyWord> keyWords = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public UserRequest(String requestText) {
+        this.requestText = requestText;
+    }
 
     public Long getId() {
         return id;
