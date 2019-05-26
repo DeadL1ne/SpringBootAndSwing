@@ -47,12 +47,15 @@ public class LoginForm extends AbstractForm {
                 hide();
                 searchForm.show();
             } catch (NotFoundException ex) {
-                JOptionPane.showMessageDialog(frame,
-                        "Invalid login or password",
-                        "Authorization error",
-                        JOptionPane.ERROR_MESSAGE);
+                showError("Authorization error", "Invalid login or password");
             }
         });
+    }
+
+    @Override
+    void hide() {
+        super.hide();
+        userService.detachForm();
     }
 
     public static void main(String[] args) {
