@@ -3,14 +3,16 @@ package search.ui;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import search.entity.Document;
+import search.entity.KeyWord;
+import search.entity.UserRequest;
 import search.service.impl.DocumentService;
+import search.service.impl.KeyWordService;
+import search.service.impl.UserRequestService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.List;
 
 @Component
 public class SearchForm extends AbstractForm {
@@ -21,6 +23,14 @@ public class SearchForm extends AbstractForm {
     @Autowired
     private DocumentService documentService;
 
+    @Autowired
+    private UserRequestService userRequestService;
+
+    @Autowired
+    private KeyWordService keyWordService;
+
+    private UserRequest userRequest;
+
     private JPanel searchPanel;
     private JTextField searchTextField;
     private JButton buttonSearch;
@@ -30,6 +40,8 @@ public class SearchForm extends AbstractForm {
     private DefaultListModel<String> resultDataset = new DefaultListModel<>();
 
     Set<Document> docs = new HashSet<>();
+
+    Set<KeyWord> keyWords = new HashSet<>();
 
     public SearchForm() {
         final int WIDTH_FORM = 500;
@@ -59,12 +71,33 @@ public class SearchForm extends AbstractForm {
 
         docs.clear();
         resultDataset.clear();
-        ArrayList<String> keyWords = new ArrayList<>(Arrays.asList(searchTextField.getText()
-                .toLowerCase().split(" ")));
-        keyWords.forEach(keyWord -> docs.addAll(documentService.getDocumentsByKeyWord(keyWord)));
+
+        Optional<UserRequest> optionalUserRequest = userRequestService.getUserRequestByRequestText(searchTextField.getText());
+        if (optionalUserRequest.isPresent()) {
+            userRequest = optionalUserRequest.get();
+            userRequest.getKeyWords().forEach(keyWord -> docs.addAll(documentService.getDocumentsByKeyWord(keyWord.getWord())));
+        } else {
+            List<String> splitedRequest = new ArrayList<>(Arrays.asList(searchTextField.getText()
+                    .toLowerCase().split(" ")));
+            splitedRequest.forEach(word -> {
+                List<KeyWord> words = keyWordService.getKeyWord(word);
+                if (!words.isEmpty()) {
+                    keyWords.addAll(words);
+                }
+            });
+            keyWords.forEach(keyWord -> docs.addAll(documentService.getDocumentsByKeyWord(keyWord.getWord())));
+            saveUserRequest();
+        }
 
         if (docs.isEmpty()) return;
         docs.forEach(document -> resultDataset.addElement(document.getName()));
+    }
+
+    private void saveUserRequest() {
+        userRequest = new UserRequest(searchTextField.getText());
+        userRequest.setUser(loginForm.getUser());
+        userRequest.getKeyWords().addAll(keyWords);
+        userRequestService.save(userRequest);
     }
 
     private void mockData() {

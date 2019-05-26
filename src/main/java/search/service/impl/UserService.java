@@ -1,11 +1,14 @@
 package search.service.impl;
 
+import error.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import search.dao.UserDAO;
 import search.entity.User;
 import search.service.IUserSevice;
+
+import java.util.Optional;
 
 @Service
 public class UserService implements IUserSevice {
@@ -26,4 +29,9 @@ public class UserService implements IUserSevice {
     public Boolean isUserExists(String login, String password) {
         return dao.exists(Example.of(new User(login, password)));
     }
+
+    public User getUser(String login, String password) throws NotFoundException {
+        return dao.findOne(Example.of(new User(login, password))).orElseThrow(() -> new NotFoundException());
+    }
 }
+

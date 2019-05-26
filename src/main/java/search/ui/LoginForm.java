@@ -1,7 +1,9 @@
 package search.ui;
 
+import error.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import search.entity.User;
 import search.service.impl.UserService;
 
 import javax.swing.*;
@@ -15,6 +17,8 @@ public class LoginForm extends AbstractForm {
 
     @Autowired
     private SearchForm searchForm;
+
+    private User user;
 
     private JButton btnLogIn;
     private JPanel panel;
@@ -38,10 +42,11 @@ public class LoginForm extends AbstractForm {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         btnLogIn.addActionListener(e -> {
-            if (checkLogin()) {
+            try {
+                user = userService.getUser(tfLogin.getText(), tfPassword.getText());
                 hide();
                 searchForm.show();
-            } else {
+            } catch (NotFoundException ex) {
                 JOptionPane.showMessageDialog(frame,
                         "Invalid login or password",
                         "Authorization error",
@@ -56,5 +61,9 @@ public class LoginForm extends AbstractForm {
 
     private boolean checkLogin() {
         return userService.isUserExists(tfLogin.getText(), tfPassword.getText());
+    }
+
+    public User getUser() {
+        return user;
     }
 }
