@@ -7,6 +7,13 @@ import java.util.Set;
 @Entity
 @Table(name = "document")
 public class Document {
+
+    public Document() {}
+
+    public Document(String name) {
+        this.name = name;
+    }
+
     @Id
     @GeneratedValue(generator = "document_generator")
     @SequenceGenerator(
@@ -19,9 +26,6 @@ public class Document {
     private String name;
 
     @ManyToMany(fetch = FetchType.EAGER)
-            /*cascade = {
-                    CascadeType.MERGE
-            })*/
     @JoinTable(name = "key_word_documents")
     private Set<KeyWord> keyWords = new HashSet<>();
 

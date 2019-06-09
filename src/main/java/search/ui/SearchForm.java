@@ -11,8 +11,14 @@ import search.service.impl.UserRequestService;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Component
 public class SearchForm extends AbstractForm {
@@ -64,6 +70,18 @@ public class SearchForm extends AbstractForm {
             resultDataset.clear();
             loginForm.show();
         });
+        resultList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JList<String> theList = (JList) e.getSource();
+                if (e.getClickCount() == 2) {
+                    int index = theList.locationToIndex(e.getPoint());
+                    if (index >= 0) {
+                        doubleClickOnDocument(theList.getModel().getElementAt(index).toString());
+                    }
+                }
+            }
+        });
     }
 
     private void search() {
@@ -72,9 +90,10 @@ public class SearchForm extends AbstractForm {
         docs.clear();
         resultDataset.clear();
 
-        Optional<UserRequest> optionalUserRequest = userRequestService.getUserRequestByRequestText(searchTextField.getText());
+        Optional<UserRequest> optionalUserRequest = userRequestService.getUserRequestByRequestText(searchTextField.getText(), loginForm.getUser());
         if (optionalUserRequest.isPresent()) {
             userRequest = optionalUserRequest.get();
+            userRequest.setKeyWords(userRequest.getKeyWords());
             userRequest.getKeyWords().forEach(keyWord -> docs.addAll(documentService.getDocumentsByKeyWord(keyWord.getWord())));
         } else {
             List<String> splitedRequest = new ArrayList<>(Arrays.asList(searchTextField.getText()
@@ -86,20 +105,32 @@ public class SearchForm extends AbstractForm {
                 }
             });
             keyWords.forEach(keyWord -> docs.addAll(documentService.getDocumentsByKeyWord(keyWord.getWord())));
-            //example
-
-            //saveUserRequest();
+            saveUserRequest();
         }
 
         if (docs.isEmpty()) return;
+        docs = docs.stream().filter(distinctByKey(Document::getName)).collect(Collectors.toSet());
         docs.forEach(document -> resultDataset.addElement(document.getName()));
     }
 
     private void saveUserRequest() {
-        userRequest = new UserRequest(searchTextField.getText());
-        userRequest.setUser(loginForm.getUser());
+        userRequest = new UserRequest(searchTextField.getText(), loginForm.getUser());
         userRequest.getKeyWords().addAll(keyWords);
         userRequestService.save(userRequest);
+    }
+
+    private void doubleClickOnDocument(String docName) {
+        Document doc = documentService.getDocByName(docName);
+        userRequest.getKeyWords().addAll(doc.getKeyWords().stream()
+                .filter(distinctByKey(KeyWord::getWord)).collect(Collectors.toSet()));
+        userRequestService.save(userRequest);
+    }
+
+    public static <T> Predicate<T> distinctByKey(
+            Function<? super T, ?> keyExtractor) {
+
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
     private void mockData() {

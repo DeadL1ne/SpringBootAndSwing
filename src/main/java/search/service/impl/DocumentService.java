@@ -1,6 +1,7 @@
 package search.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import search.dao.DocumentDAO;
 import search.entity.Document;
@@ -27,5 +28,10 @@ public class DocumentService implements IDocumentService {
         Set<Document> documents = new HashSet<>();
         keyWordService.getKeyWord(keyWord).forEach(word -> documents.addAll(word.getDocuments()));
         return documents;
+    }
+
+    @Override
+    public Document getDocByName(String name) {
+         return dao.findOne(Example.of(new Document(name))).orElse(new Document(name));
     }
 }

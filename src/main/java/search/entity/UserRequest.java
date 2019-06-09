@@ -19,10 +19,7 @@ public class UserRequest {
 
     private String requestText;
 
-    @ManyToMany(fetch = FetchType.EAGER,
-    cascade = {
-            CascadeType.MERGE
-    })
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "key_word_user_requests")
     private Set<KeyWord> keyWords = new HashSet<>();
 
@@ -32,8 +29,9 @@ public class UserRequest {
 
     public UserRequest(){}
 
-    public UserRequest(String requestText) {
+    public UserRequest(String requestText, User user) {
         this.requestText = requestText;
+        this.user = user;
     }
 
     public Long getId() {
