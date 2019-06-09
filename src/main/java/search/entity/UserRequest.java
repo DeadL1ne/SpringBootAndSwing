@@ -19,21 +19,19 @@ public class UserRequest {
 
     private String requestText;
 
-    @ManyToMany(fetch = FetchType.EAGER,
-    cascade = {
-            CascadeType.MERGE
-    })
-    @JoinTable(name = "key_word_user_requests",
-    joinColumns = @JoinColumn(name="user_requests_id"),
-    inverseJoinColumns = @JoinColumn(name = "key_words_id"))
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "key_word_user_requests")
     private Set<KeyWord> keyWords = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public UserRequest(String requestText) {
+    public UserRequest(){}
+
+    public UserRequest(String requestText, User user) {
         this.requestText = requestText;
+        this.user = user;
     }
 
     public Long getId() {

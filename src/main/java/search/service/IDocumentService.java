@@ -7,4 +7,6 @@ import java.util.Set;
 public interface IDocumentService {
 
     Set<Document> getDocumentsByKeyWord(String keyWord);
+
+    Document getDocByName(String name);
 }
