@@ -18,13 +18,11 @@ public class Document {
 
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER,
-            cascade = {
+    @ManyToMany(fetch = FetchType.EAGER)
+            /*cascade = {
                     CascadeType.MERGE
-            })
-    @JoinTable(name = "key_word_documents",
-            joinColumns = @JoinColumn(name="documents_id"),
-            inverseJoinColumns = @JoinColumn(name = "key_words_id"))
+            })*/
+    @JoinTable(name = "key_word_documents")
     private Set<KeyWord> keyWords = new HashSet<>();
 
     public Long getId() {

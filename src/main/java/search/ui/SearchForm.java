@@ -39,9 +39,9 @@ public class SearchForm extends AbstractForm {
 
     private DefaultListModel<String> resultDataset = new DefaultListModel<>();
 
-    Set<Document> docs = new HashSet<>();
+    private Set<Document> docs = new HashSet<>();
 
-    Set<KeyWord> keyWords = new HashSet<>();
+    private Set<KeyWord> keyWords = new HashSet<>();
 
     public SearchForm() {
         final int WIDTH_FORM = 500;
@@ -86,7 +86,9 @@ public class SearchForm extends AbstractForm {
                 }
             });
             keyWords.forEach(keyWord -> docs.addAll(documentService.getDocumentsByKeyWord(keyWord.getWord())));
-            saveUserRequest();
+            //example
+
+            //saveUserRequest();
         }
 
         if (docs.isEmpty()) return;

@@ -23,14 +23,14 @@ public class UserRequest {
     cascade = {
             CascadeType.MERGE
     })
-    @JoinTable(name = "key_word_user_requests",
-    joinColumns = @JoinColumn(name="user_requests_id"),
-    inverseJoinColumns = @JoinColumn(name = "key_words_id"))
+    @JoinTable(name = "key_word_user_requests")
     private Set<KeyWord> keyWords = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public UserRequest(){}
 
     public UserRequest(String requestText) {
         this.requestText = requestText;
