@@ -5,7 +5,7 @@ import search.entity.UserRequest;
 
 import java.util.Optional;
 
-public interface IUserRequestService {
+public interface IUserRequestService extends IService {
 
     Optional<UserRequest> getUserRequestByRequestText(String requestText, User user);
 

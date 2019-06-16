@@ -7,6 +7,7 @@ import search.dao.UserRequestDAO;
 import search.entity.User;
 import search.entity.UserRequest;
 import search.service.IUserRequestService;
+import search.ui.AbstractForm;
 
 import java.util.Optional;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class UserRequestService implements IUserRequestService {
 
     private UserRequestDAO dao;
+    private AbstractForm abstractForm;
 
     @Autowired
     public UserRequestService(UserRequestDAO dao) {
@@ -28,5 +30,15 @@ public class UserRequestService implements IUserRequestService {
     @Override
     public void save(UserRequest userRequest) {
         dao.save(userRequest);
+    }
+
+    @Override
+    public void attachForm(AbstractForm form) {
+        this.abstractForm = form;
+    }
+
+    @Override
+    public void detachForm() {
+        this.abstractForm = null;
     }
 }

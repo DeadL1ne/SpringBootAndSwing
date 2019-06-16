@@ -6,7 +6,7 @@ import org.springframework.lang.NonNull;
 import javax.swing.*;
 import java.awt.*;
 
-abstract class AbstractForm {
+public abstract class AbstractForm {
 
     @NonNull
     JFrame frame;
@@ -24,5 +24,13 @@ abstract class AbstractForm {
         int centerX = (screenDimension.width - frame.getWidth()) / 2;
         int centerY = (screenDimension.height - frame.getHeight()) / 2;
         frame.setLocation(new Point(centerX, centerY));
+    }
+
+    public void showError(String title, String message) {
+        JOptionPane.showMessageDialog(frame,
+                message,
+                title,
+                JOptionPane.ERROR_MESSAGE);
+
     }
 }

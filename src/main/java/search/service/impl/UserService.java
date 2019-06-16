@@ -6,14 +6,14 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import search.dao.UserDAO;
 import search.entity.User;
-import search.service.IUserSevice;
-
-import java.util.Optional;
+import search.service.IUserService;
+import search.ui.AbstractForm;
 
 @Service
-public class UserService implements IUserSevice {
+public class UserService implements IUserService {
 
     private final UserDAO dao;
+    private AbstractForm abstractForm;
 
     @Autowired
     public UserService(UserDAO dao) {
@@ -32,6 +32,16 @@ public class UserService implements IUserSevice {
 
     public User getUser(String login, String password) throws NotFoundException {
         return dao.findOne(Example.of(new User(login, password))).orElseThrow(() -> new NotFoundException());
+    }
+
+    @Override
+    public void attachForm(AbstractForm form) {
+        this.abstractForm = form;
+    }
+
+    @Override
+    public void detachForm() {
+        this.abstractForm = null;
     }
 }
 

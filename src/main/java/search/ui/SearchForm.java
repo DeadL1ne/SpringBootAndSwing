@@ -2,6 +2,7 @@ package search.ui;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import search.GlobalConst;
 import search.entity.Document;
 import search.entity.KeyWord;
 import search.entity.UserRequest;
@@ -84,6 +85,25 @@ public class SearchForm extends AbstractForm {
         });
     }
 
+    @Override
+    void show() {
+        super.show();
+        documentService.attachForm(this);
+        userRequestService.attachForm(this);
+        keyWordService.attachForm(this);
+        if(!GlobalConst.isDataBaseFilled) {
+            new Thread(this::fillDataBase).start();
+        }
+    }
+
+    @Override
+    void hide() {
+        super.hide();
+        documentService.detachForm();
+        userRequestService.detachForm();
+        keyWordService.detachForm();
+    }
+
     private void search() {
         if (searchTextField.getText().isEmpty()) return;
 
@@ -139,5 +159,9 @@ public class SearchForm extends AbstractForm {
         mockedData.add("Java file");
         mockedData.add("Python file");
         mockedData.forEach(item -> resultDataset.addElement(item));
+    }
+
+    private void fillDataBase() {
+        documentService.fillDatabase();
     }
 }
