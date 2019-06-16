@@ -11,4 +11,6 @@ public interface IDocumentService extends IService {
     void fillDatabase();
 
     Document saveDocument(Document document);
+
+    Document getDocByName(String name);
 }

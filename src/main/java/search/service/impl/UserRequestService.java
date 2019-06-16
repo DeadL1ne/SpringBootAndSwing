@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import search.dao.UserRequestDAO;
+import search.entity.User;
 import search.entity.UserRequest;
 import search.service.IUserRequestService;
 import search.ui.AbstractForm;
@@ -22,8 +23,8 @@ public class UserRequestService implements IUserRequestService {
     }
 
     @Override
-    public Optional<UserRequest> getUserRequestByRequestText(String requestText) {
-        return dao.findOne(Example.of(new UserRequest(requestText)));
+    public Optional<UserRequest> getUserRequestByRequestText(String requestText, User user) {
+        return dao.findOne(Example.of(new UserRequest(requestText, user)));
     }
 
     @Override

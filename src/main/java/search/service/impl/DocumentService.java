@@ -1,6 +1,7 @@
 package search.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import search.GlobalConst;
 import search.dao.DocumentDAO;
@@ -54,10 +55,10 @@ public class DocumentService implements IDocumentService {
                     }
                 }
                 Document document;
-                if (dao.findByDocumentName(filename).size() == 0) {
+                if(getDocByName(filename) == null) {
                     document = new Document();
                 } else {
-                    document = dao.findByDocumentName(filename).get(0);
+                    document = getDocByName(filename);
                 }
                 document.setName(filename);
                 document.setKeyWords(keyWords);
@@ -83,5 +84,10 @@ public class DocumentService implements IDocumentService {
     @Override
     public void detachForm() {
         this.abstractForm = null;
+    }
+
+    @Override
+    public Document getDocByName(String name) {
+         return dao.findOne(Example.of(new Document(name))).orElse(new Document(name));
     }
 }
